@@ -2,10 +2,11 @@ package varnishclient
 
 import (
 	"bufio"
-	"github.com/golang/glog"
 	"net"
 	"strconv"
 	"strings"
+
+	"github.com/golang/glog"
 )
 
 func DialTCP(address string) (Client, error) {
@@ -32,7 +33,7 @@ func DialTCP(address string) (Client, error) {
 
 	if resp.Code == ResponseAuthenticationRequired {
 		client.authChallenge = []byte(strings.Split(string(resp.Body), "\n")[0])
-		client.AuthenticationRequired = true
+		client.authenticationRequired = true
 
 		glog.Infof("authentication required. challenge string: %s", strconv.Quote(string(client.authChallenge)))
 	}

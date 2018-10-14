@@ -20,7 +20,11 @@ func (c *client) Authenticate(secret []byte) error {
 		return fmt.Errorf("response code was %d, expected %d", resp.Code, ResponseOK)
 	}
 
-	c.Authenticated = true
+	c.authenticated = true
 
 	return nil
+}
+
+func (c *client) AuthenticationRequired() bool {
+	return c.authenticationRequired
 }

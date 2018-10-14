@@ -31,11 +31,12 @@ type client struct {
 	writer        io.Writer
 	scanner       *bufio.Scanner
 
-	AuthenticationRequired bool
-	Authenticated          bool
+	authenticationRequired bool
+	authenticated          bool
 }
 
 type Client interface {
+	AuthenticationRequired() bool
 	Authenticate([]byte) error
 	ListBackends(pattern string) (BackendsResponse, error)
 
