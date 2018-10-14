@@ -7,7 +7,7 @@ import (
 )
 
 var defaultRegex = regexp.MustCompile(`\s+\(default\)$`)
-var unitRegex = regexp.MustCompile(`\s+\([.*]\)$`)
+var unitRegex = regexp.MustCompile(`\s+\[(.*)]$`)
 
 func (c *client) ListParameters() (ParametersResponse, error) {
 	resp, err := c.sendRequest("param.show")
@@ -19,7 +19,7 @@ func (c *client) ListParameters() (ParametersResponse, error) {
 		return nil, fmt.Errorf("could not list parameters (code %d): %s", resp.Code, string(resp.Body))
 	}
 
-	lines := strings.Split(string(resp.Body), "\n")[1:]
+	lines := strings.Split(string(resp.Body), "\n")
 	params := make(ParametersResponse, 0, len(lines))
 
 	for _, line := range lines {
@@ -33,7 +33,7 @@ func (c *client) ListParameters() (ParametersResponse, error) {
 		param.Name = items[0]
 
 		if len(items) > 1 {
-			val := items[1]
+			val := strings.TrimSpace(items[1])
 
 			if defaultRegex.MatchString(val) {
 				param.IsDefault = true
