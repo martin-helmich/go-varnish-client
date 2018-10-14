@@ -9,6 +9,8 @@ import (
 	"github.com/golang/glog"
 )
 
+// DialTCP connects to an existing Varnish administration port.
+// This method does not perform authentication. Use the `Authenticate()` method for that.
 func DialTCP(address string) (Client, error) {
 	glog.V(7).Infof("connecting to Varnish admin port at %s", address)
 
@@ -25,9 +27,7 @@ func DialTCP(address string) (Client, error) {
 	}
 
 	resp, err := client.readResponse()
-	if err == ErrNoResponse {
-		return &client, nil
-	} else if err != nil {
+	if err != nil {
 		return nil, err
 	}
 

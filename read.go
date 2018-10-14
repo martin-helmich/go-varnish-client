@@ -1,15 +1,13 @@
 package varnishclient
 
 import (
-	"errors"
 	"fmt"
-	"github.com/golang/glog"
 	"io"
 	"strconv"
 	"strings"
-)
 
-var ErrNoResponse = errors.New("no response")
+	"github.com/golang/glog"
+)
 
 func (c *client) readResponse() (*Response, error) {
 	header := make([]byte, 13)
@@ -34,10 +32,10 @@ func (c *client) readResponse() (*Response, error) {
 
 	glog.V(8).Infof("received message from Varnish server: response code %d, body length %d", code, blen)
 
-	body := make([]byte, blen + 1)
+	body := make([]byte, blen+1)
 	m, err := io.ReadFull(c.reader, body)
 
-	if m != blen + 1 {
+	if m != blen+1 {
 		return nil, fmt.Errorf("incomplete body: only %d bytes read, %d expected", m, blen)
 	}
 
