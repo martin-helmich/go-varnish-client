@@ -55,4 +55,5 @@ type Client interface {
 	AddLabelToVCL(label string, configName string) error
 	LoadVCL(configName, filename string, mode string) error
 	UseVCL(configName string) error
+	SetVCLState(configName string, state VCLState) error
 }
