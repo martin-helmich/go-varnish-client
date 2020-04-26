@@ -5,8 +5,10 @@ import (
 	"strconv"
 )
 
-func (c *client) LoadVCL(configname, filename string, mode string) error {
-	resp, err := c.sendRequest("vcl.load", strconv.Quote(configname), strconv.Quote(filename), mode)
+// LoadVCL compiles and loads the VCL file from the given file.
+// See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#vcl-load-configname-filename-auto-cold-warm
+func (c *Client) LoadVCL(configname, filename string, mode VCLState) error {
+	resp, err := c.sendRequest("vcl.load", strconv.Quote(configname), strconv.Quote(filename), string(mode))
 	if err != nil {
 		return err
 	}

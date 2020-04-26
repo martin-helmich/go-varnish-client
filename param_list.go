@@ -9,7 +9,9 @@ import (
 var defaultRegex = regexp.MustCompile(`\s+\(default\)$`)
 var unitRegex = regexp.MustCompile(`\s+\[(.*)]$`)
 
-func (c *client) ListParameters() (ParametersResponse, error) {
+// ListParameters lists all Varnish parameters and their values.
+// See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#param-show-l-j-param-changed
+func (c *Client) ListParameters() (ParametersResponse, error) {
 	resp, err := c.sendRequest("param.show")
 	if err != nil {
 		return nil, err
@@ -27,28 +29,7 @@ func (c *client) ListParameters() (ParametersResponse, error) {
 			continue
 		}
 
-		param := Parameter{}
-
-		items := strings.SplitN(line, " ", 2)
-		param.Name = items[0]
-
-		if len(items) > 1 {
-			val := strings.TrimSpace(items[1])
-
-			if defaultRegex.MatchString(val) {
-				param.IsDefault = true
-				val = defaultRegex.ReplaceAllString(val, "")
-			}
-
-			uMatches := unitRegex.FindStringSubmatch(val)
-			if len(uMatches) >= 1 {
-				param.Unit = uMatches[1]
-				val = unitRegex.ReplaceAllString(val, "")
-			}
-
-			param.Value = val
-		}
-
+		param := paramFromLine(line)
 		params = append(params, param)
 	}
 

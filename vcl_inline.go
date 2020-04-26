@@ -5,14 +5,11 @@ import (
 	"strconv"
 )
 
-const (
-	VCLModeAuto = "auto"
-	VCLModeCold = "cold"
-	VCLModeWarm = "warm"
-)
-
-func (c *client) DefineInlineVCL(configname string, vcl []byte, mode string) error {
-	resp, err := c.sendRequest("vcl.inline", strconv.Quote(configname), strconv.Quote(string(vcl)), mode)
+// DefineInlineVCL compiles and loads a new VCL file with the file contents
+// specified by the "vcl" parameter.
+// See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#vcl-inline-configname-quoted-vclstring-auto-cold-warm
+func (c *Client) DefineInlineVCL(configname string, vcl []byte, mode VCLState) error {
+	resp, err := c.sendRequest("vcl.inline", strconv.Quote(configname), strconv.Quote(string(vcl)), string(mode))
 	if err != nil {
 		return err
 	}

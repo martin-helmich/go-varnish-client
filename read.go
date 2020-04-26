@@ -9,7 +9,7 @@ import (
 	"github.com/golang/glog"
 )
 
-func (c *client) readResponse() (*Response, error) {
+func (c *Client) readResponse() (*Response, error) {
 	header := make([]byte, 13)
 
 	n, err := io.ReadFull(c.reader, header)

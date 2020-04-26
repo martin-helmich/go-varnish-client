@@ -1,0 +1,14 @@
+version: "3"
+services:
+  nginx:
+    image: nginx
+  varnish:
+    build:
+      dockerfile: test/Dockerfile
+      context: .
+    command: "-F -S /etc/varnish/secret -a 0.0.0.0:8080 -T 0.0.0.0:6082 -b nginx:80"
+    links:
+      - nginx:nginx
+    ports:
+      - 8080:8080
+      - 6082:6082

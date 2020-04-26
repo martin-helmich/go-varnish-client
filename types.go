@@ -30,7 +30,9 @@ type Parameter struct {
 // ParametersResponse is the response type of the `ListParameters` method
 type ParametersResponse []Parameter
 
-type client struct {
+// Client contains the most common Varnish administration operations (and the
+// necessary tools to build your own that are not yet implemented)
+type Client struct {
 	authChallenge []byte
 	reader        io.Reader
 	writer        io.Writer
@@ -40,9 +42,8 @@ type client struct {
 	authenticated          bool
 }
 
-// Client contains the most common Varnish administration operations (and the
-// necessary tools to build your own that are not yet implemented)
-type Client interface {
+// ClientInterface describes the common methods offered by the Varnish client
+type ClientInterface interface {
 	AuthenticationRequired() bool
 	Authenticate([]byte) error
 	ListBackends(pattern string) (BackendsResponse, error)
@@ -51,7 +52,7 @@ type Client interface {
 	ListParameters() (ParametersResponse, error)
 
 	DiscardVCL(configName string) error
-	DefineInlineVCL(configName string, vcl []byte, mode string) error
+	DefineInlineVCL(configName string, vcl []byte, mode VCLState) error
 	AddLabelToVCL(label string, configName string) error
 	LoadVCL(configName, filename string, mode string) error
 	UseVCL(configName string) error

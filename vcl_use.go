@@ -6,7 +6,9 @@ import (
 	"strings"
 )
 
-func (c *client) UseVCL(configname string) error {
+// UseVCL makes Varnish switch to the specified configuration.
+// See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#vcl-use-configname-label
+func (c *Client) UseVCL(configname string) error {
 	resp, err := c.sendRequest("vcl.use", strconv.Quote(configname))
 	if err != nil {
 		return err

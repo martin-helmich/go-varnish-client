@@ -6,7 +6,9 @@ import (
 	"strings"
 )
 
-func (c *client) AddLabelToVCL(label string, configname string) error {
+// AddLabelToVCL adds a label to a configuration file.
+// See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#vcl-label-label-configname
+func (c *Client) AddLabelToVCL(label string, configname string) error {
 	resp, err := c.sendRequest("vcl.label", strconv.Quote(label), strconv.Quote(configname))
 	if err != nil {
 		return err

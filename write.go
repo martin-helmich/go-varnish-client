@@ -1,24 +1,27 @@
 package varnishclient
 
 import (
-	"github.com/golang/glog"
 	"strconv"
+
+	"github.com/golang/glog"
 )
 
-func (c *client) writeBytes(in []byte) (int, error) {
+func (c *Client) writeBytes(in []byte) (int, error) {
 	glog.V(8).Infof("writing %d bytes to server: %x (%s)", len(in), in, strconv.Quote(string(in)))
 	return c.writer.Write(in)
 }
 
-func (c *client) writeString(in string) (int, error) {
+func (c *Client) writeString(in string) (int, error) {
 	return c.writeBytes([]byte(in))
 }
 
-func (c *client) SendRequest(method string, args ...string) (*Response, error) {
+// SendRequest sends a generic request to the Varnish admin server and returns
+// the response.
+func (c *Client) SendRequest(method string, args ...string) (*Response, error) {
 	return c.sendRequest(method, args...)
 }
 
-func (c *client) sendRequest(method string, args ...string) (*Response, error) {
+func (c *Client) sendRequest(method string, args ...string) (*Response, error) {
 	cmd := method
 
 	glog.V(8).Infof("writing to server: %s", cmd)
