@@ -1,12 +1,16 @@
 package varnishclient
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 )
 
-func (c *client) SetParameter(name, value string) error {
-	resp, err := c.sendRequest("param.set", name, strconv.Quote(value))
+// SetParameter sets a parameter to the specified value.
+// See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#param-set-param-value
+func (c *Client) SetParameter(ctx context.Context, name, value string) error {
+	args := []string{name, strconv.Quote(value)}
+	resp, err := c.roundtrip.Execute(ctx, &Request{"param.set", args})
 	if err != nil {
 		return err
 	}

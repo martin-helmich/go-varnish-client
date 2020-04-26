@@ -1,5 +1,7 @@
 package varnishclient
 
+// These constants define the usual response codes returned by the Varnish
+// admin server.
 const (
 	ResponseSyntaxError            = 100
 	ResponseUnknownCommand         = 101

@@ -19,7 +19,7 @@ $ go get github.com/martin-helmich/go-varnish-client
 First, connect to the administration port using the `varnishclient.DialTCP` method:
 
 ```go
-client, err := varnishclient.DialTCL("127.0.0.1:6082")
+client, err := varnishclient.DialTCP("127.0.0.1:6082")
 if err != nil {
     panic(err)
 }
