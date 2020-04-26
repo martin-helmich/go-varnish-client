@@ -19,7 +19,7 @@ $ go get github.com/martin-helmich/go-varnish-client
 First, connect to the administration port using the `varnishclient.DialTCP` method:
 
 ```go
-client, err := varnishclient.DialTCP("127.0.0.1:6082")
+client, err := varnishclient.DialTCP(context.Background(), "127.0.0.1:6082")
 if err != nil {
     panic(err)
 }
@@ -34,7 +34,7 @@ Then, use the `client.Authenticate()` method to perform the authentication:
 secret, _ := ioutil.ReadFile("/etc/varnish/secret")
 
 if client.AuthenticationRequired() {
-    err := client.Authenticate(secret)
+    err := client.Authenticate(context.Background(), secret)
     if err != nil {
         panic(err)
     }
@@ -44,12 +44,28 @@ if client.AuthenticationRequired() {
 ### Define and update a new configuration
 
 ```go
-err := client.DefineInlineVCL("my-new-config", vclCode, "warm")
+ctx := context.Background()
+
+err := client.DefineInlineVCL(ctx, "my-new-config", vclCode, "warm")
 if err != nil {
     panic(err)
 }
 
-err = client.UseVCL("my-new-config")
+err = client.UseVCL(ctx, "my-new-config")
+if err != nil {
+    panic(err)
+}
+```
+
+### Define timeouts/cancellations on operations
+
+All operations accept a `context.Context` parameter that can be used for timeouts and/or cancellations:
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 1 * time.Second)
+defer cancel()
+
+err := client.DefineInlineVCL(ctx, "my-new-config", vclCode, "warm")
 if err != nil {
     panic(err)
 }
