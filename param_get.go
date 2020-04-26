@@ -1,13 +1,14 @@
 package varnishclient
 
 import (
+	"context"
 	"fmt"
 	"strings"
 )
 
 // GetParameter returns a single parameter
-func (c *Client) GetParameter(name string) (*Parameter, error) {
-	params, err := c.ListParameters()
+func (c *Client) GetParameter(ctx context.Context, name string) (*Parameter, error) {
+	params, err := c.ListParameters(ctx)
 	if err != nil {
 		return nil, err
 	}

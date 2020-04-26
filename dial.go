@@ -2,6 +2,7 @@ package varnishclient
 
 import (
 	"bufio"
+	"context"
 	"net"
 	"strconv"
 	"strings"
@@ -11,7 +12,7 @@ import (
 
 // DialTCP connects to an existing Varnish administration port.
 // This method does not perform authentication. Use the `Authenticate()` method for that.
-func DialTCP(address string) (*Client, error) {
+func DialTCP(ctx context.Context, address string) (*Client, error) {
 	glog.V(7).Infof("connecting to Varnish admin port at %s", address)
 
 	conn, err := net.Dial("tcp", address)
@@ -22,11 +23,13 @@ func DialTCP(address string) (*Client, error) {
 	reader := bufio.NewReader(conn)
 
 	client := Client{
-		reader: reader,
-		writer: conn,
+		roundtrip: &roundtrip{
+			reader: reader,
+			writer: conn,
+		},
 	}
 
-	resp, err := client.readResponse()
+	resp, err := client.roundtrip.ReadHello(ctx)
 	if err != nil {
 		return nil, err
 	}

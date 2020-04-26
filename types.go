@@ -1,15 +1,8 @@
 package varnishclient
 
 import (
-	"bufio"
-	"io"
+	"context"
 )
-
-// Response contains the data that was received from Varnish in response to a request
-type Response struct {
-	Code int
-	Body []byte
-}
 
 // Backend is a single item of the list returned by the `ListBackends` method
 type Backend struct {
@@ -34,9 +27,7 @@ type ParametersResponse []Parameter
 // necessary tools to build your own that are not yet implemented)
 type Client struct {
 	authChallenge []byte
-	reader        io.Reader
-	writer        io.Writer
-	scanner       *bufio.Scanner
+	roundtrip     Roundtrip
 
 	authenticationRequired bool
 	authenticated          bool
@@ -45,16 +36,16 @@ type Client struct {
 // ClientInterface describes the common methods offered by the Varnish client
 type ClientInterface interface {
 	AuthenticationRequired() bool
-	Authenticate([]byte) error
-	ListBackends(pattern string) (BackendsResponse, error)
+	Authenticate(ctx context.Context, secret []byte) error
+	ListBackends(ctx context.Context, pattern string) (BackendsResponse, error)
 
-	SetParameter(name, value string) error
-	ListParameters() (ParametersResponse, error)
+	SetParameter(ctx context.Context, name, value string) error
+	ListParameters(ctx context.Context) (ParametersResponse, error)
 
-	DiscardVCL(configName string) error
-	DefineInlineVCL(configName string, vcl []byte, mode VCLState) error
-	AddLabelToVCL(label string, configName string) error
-	LoadVCL(configName, filename string, mode string) error
-	UseVCL(configName string) error
-	SetVCLState(configName string, state VCLState) error
+	DiscardVCL(ctx context.Context, configName string) error
+	DefineInlineVCL(ctx context.Context, configName string, vcl []byte, mode VCLState) error
+	AddLabelToVCL(ctx context.Context, label string, configName string) error
+	LoadVCL(ctx context.Context, configName, filename string, mode string) error
+	UseVCL(ctx context.Context, configName string) error
+	SetVCLState(ctx context.Context, configName string, state VCLState) error
 }

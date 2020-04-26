@@ -1,6 +1,7 @@
 package varnishclient
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -8,8 +9,9 @@ import (
 
 // AddLabelToVCL adds a label to a configuration file.
 // See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#vcl-label-label-configname
-func (c *Client) AddLabelToVCL(label string, configname string) error {
-	resp, err := c.sendRequest("vcl.label", strconv.Quote(label), strconv.Quote(configname))
+func (c *Client) AddLabelToVCL(ctx context.Context, label string, configname string) error {
+	args := []string{strconv.Quote(label), strconv.Quote(configname)}
+	resp, err := c.roundtrip.Execute(ctx, &Request{"vcl.label", args})
 	if err != nil {
 		return err
 	}

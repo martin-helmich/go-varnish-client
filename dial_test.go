@@ -7,7 +7,7 @@ import (
 )
 
 func TestDialTCP(t *testing.T) {
-	client, err := DialTCP("0.0.0.0:6082")
+	client, err := DialTCP(ctx, "0.0.0.0:6082")
 
 	require.NoError(t, err)
 	require.True(t, client.AuthenticationRequired())

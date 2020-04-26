@@ -1,6 +1,7 @@
 package varnishclient
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strings"
@@ -11,8 +12,8 @@ var unitRegex = regexp.MustCompile(`\s+\[(.*)]$`)
 
 // ListParameters lists all Varnish parameters and their values.
 // See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#param-show-l-j-param-changed
-func (c *Client) ListParameters() (ParametersResponse, error) {
-	resp, err := c.sendRequest("param.show")
+func (c *Client) ListParameters(ctx context.Context) (ParametersResponse, error) {
+	resp, err := c.roundtrip.Execute(ctx, &Request{Method: "param.show"})
 	if err != nil {
 		return nil, err
 	}

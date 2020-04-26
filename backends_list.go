@@ -1,6 +1,7 @@
 package varnishclient
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -8,14 +9,14 @@ import (
 
 // ListBackends returns the list of available backends.
 // See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#backend-list-j-p-backend-pattern
-func (c *Client) ListBackends(pattern string) (BackendsResponse, error) {
+func (c *Client) ListBackends(ctx context.Context, pattern string) (BackendsResponse, error) {
 	args := []string{}
 
 	if pattern != "" {
 		args = append(args, "-p", strconv.Quote(pattern))
 	}
 
-	resp, err := c.sendRequest("backend.list", args...)
+	resp, err := c.roundtrip.Execute(ctx, &Request{"backend.list", args})
 	if err != nil {
 		return nil, err
 	}

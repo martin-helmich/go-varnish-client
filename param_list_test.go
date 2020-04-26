@@ -9,7 +9,7 @@ import (
 func TestParameterList(t *testing.T) {
 	client := buildTestClient(t)
 
-	params, err := client.ListParameters()
+	params, err := client.ListParameters(ctx)
 	if err != nil {
 		t.Error(err)
 	}

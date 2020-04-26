@@ -9,7 +9,7 @@ import (
 func TestListBackends(t *testing.T) {
 	c := buildTestClient(t)
 
-	backends, err := c.ListBackends("")
+	backends, err := c.ListBackends(ctx, "")
 
 	require.NoError(t, err)
 	require.Len(t, backends, 1)
@@ -19,7 +19,7 @@ func TestListBackends(t *testing.T) {
 func TestListBackendsWithPattern(t *testing.T) {
 	c := buildTestClient(t)
 
-	backends, err := c.ListBackends("nonexistent.*")
+	backends, err := c.ListBackends(ctx, "nonexistent.*")
 
 	require.NoError(t, err)
 	require.Len(t, backends, 0)

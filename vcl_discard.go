@@ -1,6 +1,7 @@
 package varnishclient
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -8,8 +9,8 @@ import (
 
 // DiscardVCL unloads the VCL file specified by the given "configname".
 // See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#vcl-discard-configname-label
-func (c *Client) DiscardVCL(configname string) error {
-	resp, err := c.sendRequest("vcl.discard", strconv.Quote(configname))
+func (c *Client) DiscardVCL(ctx context.Context, configname string) error {
+	resp, err := c.roundtrip.Execute(ctx, &Request{"vcl.discard", []string{strconv.Quote(configname)}})
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,7 @@
 package varnishclient
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -16,7 +17,7 @@ import (
 //
 // If you call this method then the server does not require authentication, it
 // will simply do nothing and return "nil".
-func (c *Client) Authenticate(secret []byte) error {
+func (c *Client) Authenticate(ctx context.Context, secret []byte) error {
 	if !c.authenticationRequired {
 		return nil
 	}
@@ -25,7 +26,7 @@ func (c *Client) Authenticate(secret []byte) error {
 	response := sha256.Sum256([]byte(input))
 	responseHex := hex.EncodeToString(response[:])
 
-	resp, err := c.sendRequest("auth", responseHex)
+	resp, err := c.roundtrip.Execute(ctx, &Request{"auth", []string{responseHex}})
 	if err != nil {
 		return err
 	}
