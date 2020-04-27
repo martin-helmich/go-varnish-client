@@ -33,6 +33,9 @@ type Client struct {
 	authenticated          bool
 }
 
+// Type guard to assert that *Client actually implements ClientInterface
+var _ ClientInterface = &Client{}
+
 // ClientInterface describes the common methods offered by the Varnish client
 type ClientInterface interface {
 	AuthenticationRequired() bool
@@ -45,7 +48,7 @@ type ClientInterface interface {
 	DiscardVCL(ctx context.Context, configName string) error
 	DefineInlineVCL(ctx context.Context, configName string, vcl []byte, mode VCLState) error
 	AddLabelToVCL(ctx context.Context, label string, configName string) error
-	LoadVCL(ctx context.Context, configName, filename string, mode string) error
+	LoadVCL(ctx context.Context, configName, filename string, mode VCLState) error
 	UseVCL(ctx context.Context, configName string) error
 	SetVCLState(ctx context.Context, configName string, state VCLState) error
 }
