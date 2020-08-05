@@ -12,6 +12,27 @@ type Backend struct {
 // BackendsResponse is the respose type of the `ListBackends` method
 type BackendsResponse []Backend
 
+type VCLConfigStatus int
+
+const (
+	VCLActive VCLConfigStatus = iota
+	VCLAvailable
+	VCLDiscarded
+	VCLUnknown
+)
+
+func (v VCLConfigStatus) String() string {
+	return [...]string{"active", "available", "discarded", "unknown"}[v]
+}
+
+type VCLConfig struct {
+	Name           string
+	ActiveBackends int
+	Status         VCLConfigStatus
+}
+
+type VCLConfigsResponse []VCLConfig
+
 // Parameter is a single item of the list returned by the `ListParameters` method
 type Parameter struct {
 	Name      string
@@ -48,6 +69,7 @@ type ClientInterface interface {
 	DiscardVCL(ctx context.Context, configName string) error
 	DefineInlineVCL(ctx context.Context, configName string, vcl []byte, mode VCLState) error
 	AddLabelToVCL(ctx context.Context, label string, configName string) error
+	ListVCL(ctx context.Context) (VCLConfigsResponse, error)
 	LoadVCL(ctx context.Context, configName, filename string, mode VCLState) error
 	UseVCL(ctx context.Context, configName string) error
 	SetVCLState(ctx context.Context, configName string, state VCLState) error
