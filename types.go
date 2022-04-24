@@ -2,6 +2,7 @@ package varnishclient
 
 import (
 	"context"
+	"time"
 )
 
 // Backend is a single item of the list returned by the `ListBackends` method
@@ -32,6 +33,33 @@ type VCLConfig struct {
 }
 
 type VCLConfigsResponse []VCLConfig
+type BanListResponse []Ban
+
+const (
+	BanActive BanStatus = iota
+	BanGone
+	BanComplete
+)
+
+type BanStatus int
+
+func (v BanStatus) String() string {
+	return [...]string{"active", "gone", "complete"}[v]
+}
+
+type Ban struct {
+	Time    time.Time
+	Objects int64
+	Status  BanStatus
+	Spec    string
+}
+
+func (b Ban) Equals(ban Ban) bool {
+	if b.Spec != ban.Spec || b.Objects != ban.Objects || b.Status != ban.Status || b.Time != ban.Time {
+		return false
+	}
+	return true
+}
 
 // Parameter is a single item of the list returned by the `ListParameters` method
 type Parameter struct {
@@ -62,7 +90,8 @@ type ClientInterface interface {
 	AuthenticationRequired() bool
 	Authenticate(ctx context.Context, secret []byte) error
 	ListBackends(ctx context.Context, pattern string) (BackendsResponse, error)
-
+	Ban(ctx context.Context, args ...string) error
+	ListBans(ctx context.Context) (BanListResponse, error)
 	SetParameter(ctx context.Context, name, value string) error
 	ListParameters(ctx context.Context) (ParametersResponse, error)
 
