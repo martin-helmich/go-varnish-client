@@ -91,7 +91,7 @@ type ClientInterface interface {
 	Authenticate(ctx context.Context, secret []byte) error
 	ListBackends(ctx context.Context, pattern string) (BackendsResponse, error)
 	Ban(ctx context.Context, args ...string) error
-	ListBan(ctx context.Context) (BanListResponse, error)
+	ListBans(ctx context.Context) (BanListResponse, error)
 	SetParameter(ctx context.Context, name, value string) error
 	ListParameters(ctx context.Context) (ParametersResponse, error)
 

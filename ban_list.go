@@ -8,9 +8,9 @@ import (
 	"time"
 )
 
-// ListBan lists the Current bans.
+// ListBans lists the Current bans.
 // See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#ban-field-operator-arg-field-oper-arg
-func (c *Client) ListBan(ctx context.Context) (BanListResponse, error) {
+func (c *Client) ListBans(ctx context.Context) (BanListResponse, error) {
 	resp, err := c.roundtrip.Execute(ctx, &Request{"ban.list", nil})
 	if err != nil {
 		return nil, err
