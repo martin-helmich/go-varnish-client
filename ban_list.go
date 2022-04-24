@@ -46,14 +46,14 @@ func (c *Client) parseBanList(list string) (BanListResponse, error) {
 			return nil, err
 		}
 		status := BanActive
-			switch fields[2] {
-			case "G":
-				status = BanGone
-				break
-			case "C":
-				status = BanComplete
-				break
-			}
+		switch fields[2] {
+		case "G":
+			status = BanGone
+			break
+		case "C":
+			status = BanComplete
+			break
+		}
 		spec := ""
 		if len(fields) > 3 {
 			spec = strings.Join(fields[3:], " ")

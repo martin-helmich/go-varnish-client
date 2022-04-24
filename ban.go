@@ -7,7 +7,7 @@ import (
 
 // Ban creates a ban.
 // See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#ban-field-operator-arg-field-oper-arg
-func (c *Client) Ban(ctx context.Context, args... string) error {
+func (c *Client) Ban(ctx context.Context, args ...string) error {
 	resp, err := c.roundtrip.Execute(ctx, &Request{"ban", args})
 	if err != nil {
 		return err

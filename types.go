@@ -48,10 +48,10 @@ func (v BanStatus) String() string {
 }
 
 type Ban struct {
-	Time time.Time
-	Objects   int64
-	Status    BanStatus
-	Spec   string
+	Time    time.Time
+	Objects int64
+	Status  BanStatus
+	Spec    string
 }
 
 func (b Ban) Equals(ban Ban) bool {
