@@ -1,18 +1,27 @@
-package varnishclient
+package varnishclient_test
 
 import (
-	"testing"
-
-	"github.com/stretchr/testify/require"
+	varnishclient "github.com/martin-helmich/go-varnish-client"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
-func TestSetParam(t *testing.T) {
-	client := buildTestClient(t)
+var _ = Describe("SetParam", func() {
+	When("setting a parameter", Ordered, func() {
+		var client *varnishclient.Client
 
-	err := client.SetParameter(ctx, "backend_idle_timeout", "300")
-	require.NoError(t, err)
+		BeforeAll(func() {
+			client = buildTestClient()
+		})
 
-	p, err := client.GetParameter(ctx, "backend_idle_timeout")
-	require.NoError(t, err)
-	require.Equal(t, "300.000", p.Value)
-}
+		It("should succeed", func() {
+			Expect(client.SetParameter(ctx, "backend_idle_timeout", "300")).To(Succeed())
+		})
+
+		It("should be able to retrieve the same value", func() {
+			p, err := client.GetParameter(ctx, "backend_idle_timeout")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(p.Value).To(Equal("300.000"))
+		})
+	})
+})
