@@ -2,7 +2,7 @@ module github.com/martin-helmich/go-varnish-client
 
 require (
 	github.com/golang/glog v1.1.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 )
 
 require (
