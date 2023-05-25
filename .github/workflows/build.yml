@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         go: [ '1.18', '1.19', '1.20' ]
-        varnish: ['6.0', '7.3']
+        varnish: ['6.0', '7.2', '7.3']
 
     steps:
       - uses: actions/checkout@v3
