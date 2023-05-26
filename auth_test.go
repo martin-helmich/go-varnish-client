@@ -1,10 +1,11 @@
 package varnishclient_test
 
 import (
+	"io/ioutil"
+
 	varnishclient "github.com/martin-helmich/go-varnish-client"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"io/ioutil"
 )
 
 var client *varnishclient.Client

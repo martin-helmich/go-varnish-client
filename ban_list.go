@@ -3,6 +3,7 @@ package varnishclient
 import (
 	"context"
 	"fmt"
+
 	"github.com/martin-helmich/go-varnish-client/pkg/banlist"
 )
 
