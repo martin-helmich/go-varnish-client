@@ -10,7 +10,7 @@ import (
 // specified by the "vcl" parameter.
 // See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#vcl-inline-configname-quoted-vclstring-auto-cold-warm
 func (c *Client) DefineInlineVCL(ctx context.Context, configname string, vcl []byte, mode VCLState) error {
-	args := []string{strconv.Quote(configname), strconv.Quote(string(vcl)), string(mode)}
+	args := []string{configname, strconv.Quote(string(vcl)), string(mode)}
 	resp, err := c.roundtrip.Execute(ctx, &Request{"vcl.inline", args})
 	if err != nil {
 		return err

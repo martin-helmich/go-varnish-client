@@ -3,7 +3,6 @@ package varnishclient
 import (
 	"context"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -26,7 +25,7 @@ const (
 // SetVCLState can be used to force a loaded VCL file to a specific state.
 // See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#vcl-state-configname-auto-cold-warm
 func (c *Client) SetVCLState(ctx context.Context, configname string, state VCLState) error {
-	args := []string{strconv.Quote(configname), strconv.Quote(string(state))}
+	args := []string{configname, string(state)}
 	resp, err := c.roundtrip.Execute(ctx, &Request{"vcl.state", args})
 	if err != nil {
 		return err
