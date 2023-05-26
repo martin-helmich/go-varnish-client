@@ -22,10 +22,10 @@ func (c *Client) ListVCL(ctx context.Context) (VCLConfigsResponse, error) {
 	vclConfigs := make(VCLConfigsResponse, 0, len(lines))
 	for _, line := range lines {
 		fields := strings.Fields(line)
-		if len(fields) < 4 {
+		if len(fields) < 5 {
 			continue
 		}
-		name := fields[len(fields)-1]
+		name := fields[4]
 		vclConfig := VCLConfig{Name: name}
 		status := fields[0]
 		switch status {
@@ -38,7 +38,7 @@ func (c *Client) ListVCL(ctx context.Context) (VCLConfigsResponse, error) {
 		default:
 			vclConfig.Status = VCLUnknown
 		}
-		if backends, err := strconv.Atoi(fields[len(fields)-2]); err == nil {
+		if backends, err := strconv.Atoi(fields[3]); err == nil {
 			vclConfig.ActiveBackends = backends
 		}
 		vclConfigs = append(vclConfigs, vclConfig)
