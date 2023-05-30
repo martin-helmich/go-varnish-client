@@ -2,11 +2,10 @@ package varnishclient_test
 
 import (
 	"context"
+	varnishclient "github.com/martin-helmich/go-varnish-client"
 	"os/exec"
 	"testing"
 	"time"
-
-	varnishclient "github.com/martin-helmich/go-varnish-client"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -36,7 +35,14 @@ var _ = BeforeSuite(func() {
 	teardown()
 	Expect(setup()).To(Succeed())
 
-	time.Sleep(2 * time.Second)
+	for i := 0; i < 50; i++ {
+		_, err := varnishclient.DialTCP(ctx, "0.0.0.0:6082")
+		if err == nil {
+			break
+		}
+
+		time.Sleep(100 * time.Millisecond)
+	}
 })
 
 var _ = AfterSuite(func() {
