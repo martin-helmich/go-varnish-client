@@ -1,13 +1,14 @@
-package varnishclient
+package varnishclient_test
 
 import (
 	"io/ioutil"
-	"testing"
 
-	"github.com/stretchr/testify/require"
+	varnishclient "github.com/martin-helmich/go-varnish-client"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
-var client *Client
+var client *varnishclient.Client
 
 func ExampleClient_Authenticate() {
 	if client.AuthenticationRequired() {
@@ -24,22 +25,26 @@ func ExampleClient_Authenticate() {
 	}
 }
 
-func TestAuthenticate(t *testing.T) {
-	client, err := DialTCP(ctx, "0.0.0.0:6082")
+var _ = Describe("Authentication", func() {
+	When("providing the correct secret", func() {
+		It("should connect successfully", func() {
+			client, err := varnishclient.DialTCP(ctx, "0.0.0.0:6082")
 
-	require.NoError(t, err)
-	require.True(t, client.AuthenticationRequired())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(client.AuthenticationRequired()).To(BeTrue())
 
-	err = client.Authenticate(ctx, []byte("72be6aba-00c4-4908-a99f-0e4eb7cc86ca\n"))
-	require.NoError(t, err)
-}
+			Expect(client.Authenticate(ctx, []byte("72be6aba-00c4-4908-a99f-0e4eb7cc86ca\n"))).To(Succeed())
+		})
+	})
 
-func TestAuthenticateWrongSecret(t *testing.T) {
-	client, err := DialTCP(ctx, "0.0.0.0:6082")
+	When("providing the wrong secret", func() {
+		It("should return an error", func() {
+			client, err := varnishclient.DialTCP(ctx, "0.0.0.0:6082")
 
-	require.NoError(t, err)
-	require.True(t, client.AuthenticationRequired())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(client.AuthenticationRequired()).To(BeTrue())
 
-	err = client.Authenticate(ctx, []byte("72be6aba-00c4-4908-a99f-0e4eb7cc86cb\n"))
-	require.Error(t, err)
-}
+			Expect(client.Authenticate(ctx, []byte("72be6aba-00c4-4908-a99f-0e4eb7cc86cb\n"))).NotTo(Succeed())
+		})
+	})
+})

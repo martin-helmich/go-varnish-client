@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.18', '1.19', '1.20' ]
+        go: [ '1.19', '1.20' ]
+        varnish: ['6.0', '7.2', '7.3']
 
     steps:
       - uses: actions/checkout@v3
@@ -21,6 +22,9 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
+
+      - name: Build testing containers
+        run: docker-compose build --build-arg VARNISH_VERSION=${{ matrix.varnish }}
 
       - name: Setup test dependencies
         run: docker-compose up -d

@@ -2,7 +2,8 @@ package varnishclient
 
 import (
 	"context"
-	"time"
+
+	"github.com/martin-helmich/go-varnish-client/pkg/banlist"
 )
 
 // Backend is a single item of the list returned by the `ListBackends` method
@@ -33,33 +34,16 @@ type VCLConfig struct {
 }
 
 type VCLConfigsResponse []VCLConfig
-type BanListResponse []Ban
+type BanListResponse = banlist.BanList
 
 const (
-	BanActive BanStatus = iota
-	BanGone
-	BanComplete
+	BanActive   = banlist.BanActive
+	BanGone     = banlist.BanGone
+	BanComplete = banlist.BanComplete
 )
 
-type BanStatus int
-
-func (v BanStatus) String() string {
-	return [...]string{"active", "gone", "complete"}[v]
-}
-
-type Ban struct {
-	Time    time.Time
-	Objects int64
-	Status  BanStatus
-	Spec    string
-}
-
-func (b Ban) Equals(ban Ban) bool {
-	if b.Spec != ban.Spec || b.Objects != ban.Objects || b.Status != ban.Status || b.Time != ban.Time {
-		return false
-	}
-	return true
-}
+type BanStatus = banlist.BanStatus
+type Ban = banlist.Ban
 
 // Parameter is a single item of the list returned by the `ListParameters` method
 type Parameter struct {

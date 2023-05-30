@@ -9,17 +9,11 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func ExampleClient_SetVCLState() {
-	if err := client.SetVCLState(ctx, "boot", varnishclient.VCLStateCold); err != nil {
-		// handle error
-	}
-}
-
-var _ = Describe("SetVCLState", func() {
-	When("setting the VCL state", Ordered, func() {
+var _ = Describe("DiscardVCL", func() {
+	When("discarding a VCL", Ordered, func() {
 		var client *varnishclient.Client
 
-		name := fmt.Sprintf("state-%04d", rand.Intn(9999))
+		name := fmt.Sprintf("discard-%04d", rand.Intn(9999))
 
 		BeforeAll(func() {
 			client = buildTestClient()
@@ -27,7 +21,13 @@ var _ = Describe("SetVCLState", func() {
 		})
 
 		It("should succeed", func() {
-			Expect(client.SetVCLState(ctx, name, varnishclient.VCLStateAuto)).To(Succeed())
+			Expect(client.DiscardVCL(ctx, name)).To(Succeed())
+		})
+
+		It("should not be able to retrieve the same value", func() {
+			vcls, err := client.ListVCL(ctx)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vcls).NotTo(ContainElement(HaveField("Name", Equal(name))))
 		})
 	})
 })
