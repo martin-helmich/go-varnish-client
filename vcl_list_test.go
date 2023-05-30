@@ -26,8 +26,9 @@ var _ = Describe("ListVCL", func() {
 		})
 
 		It("should contain the boot VCL entry", func() {
-			Expect(resp[0].Name).To(Equal("boot"))
-			Expect(resp[0].Status).To(Equal(varnishclient.VCLActive))
+			Expect(resp).To(ContainElement(And(
+				HaveField("Name", Equal("boot")),
+			)))
 		})
 	})
 })

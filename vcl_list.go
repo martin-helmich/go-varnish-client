@@ -10,6 +10,30 @@ import (
 // ListVCL lists the compiled VCLs.
 // See https://varnish-cache.org/docs/trunk/reference/varnish-cli.html#vcl-list-j
 func (c *Client) ListVCL(ctx context.Context) (VCLConfigsResponse, error) {
+	// NOTE
+	// Output for varnish 6:
+	//
+	// varnish> vcl.list
+	// 200
+	// available   auto/warm          0 boot (1 label)
+	// available   auto/warm          0 state-7752
+	// active      auto/warm          0 use-0132
+	// available   auto/warm          0 inline-7036
+	// available  label/warm          0 label-5509 -> boot
+	//
+	// Output for varnish 7:
+	//
+	// varnish> vcl.list
+	// 200
+	// available   auto     warm         0    boot           <-    (1 label)
+	// active      auto     warm         0    use-7500
+	// available   label    warm         0    label-0737     ->    boot
+	// available   auto     warm         0    state-9344
+	// available   auto     warm         0    inline-4907
+	//
+	// TODO: This is a hacky way to support both varnish 6 and 7. Why don't we
+	// just use the "-j" flag and parse the JSON output?
+
 	resp, err := c.roundtrip.Execute(ctx, &Request{"vcl.list", nil})
 	if err != nil {
 		return nil, err
@@ -22,12 +46,24 @@ func (c *Client) ListVCL(ctx context.Context) (VCLConfigsResponse, error) {
 	vclConfigs := make(VCLConfigsResponse, 0, len(lines))
 	for _, line := range lines {
 		fields := strings.Fields(line)
-		if len(fields) < 5 {
+		if len(fields) < 4 {
 			continue
 		}
-		name := fields[4]
+
+		var name, status, activeBackendStr string
+
+		if _, err := strconv.Atoi(fields[2]); err == nil {
+			name = fields[3]
+			status = fields[0]
+			activeBackendStr = fields[2]
+		} else {
+			name = fields[4]
+			status = fields[0]
+			activeBackendStr = fields[3]
+		}
+
 		vclConfig := VCLConfig{Name: name}
-		status := fields[0]
+
 		switch status {
 		case "active":
 			vclConfig.Status = VCLActive
@@ -38,7 +74,7 @@ func (c *Client) ListVCL(ctx context.Context) (VCLConfigsResponse, error) {
 		default:
 			vclConfig.Status = VCLUnknown
 		}
-		if backends, err := strconv.Atoi(fields[3]); err == nil {
+		if backends, err := strconv.Atoi(activeBackendStr); err == nil {
 			vclConfig.ActiveBackends = backends
 		}
 		vclConfigs = append(vclConfigs, vclConfig)
