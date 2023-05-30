@@ -2,10 +2,11 @@ package varnishclient_test
 
 import (
 	"fmt"
+	"math/rand"
+
 	varnishclient "github.com/martin-helmich/go-varnish-client"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"math/rand"
 )
 
 var _ = Describe("DefineInlineVCL", func() {

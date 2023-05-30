@@ -2,11 +2,11 @@ package varnishclient_test
 
 import (
 	"context"
-	varnishclient "github.com/martin-helmich/go-varnish-client"
 	"os/exec"
 	"testing"
 	"time"
 
+	varnishclient "github.com/martin-helmich/go-varnish-client"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
