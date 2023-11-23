@@ -3,7 +3,7 @@ module github.com/martin-helmich/go-varnish-client
 require (
 	github.com/golang/glog v1.2.0
 	github.com/onsi/ginkgo/v2 v2.13.1
-	github.com/onsi/gomega v1.29.0
+	github.com/onsi/gomega v1.30.0
 )
 
 require (
